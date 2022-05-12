@@ -91,14 +91,14 @@ pipeline {
             }
         }
         stage('configureingress') { 
-            steps { 
-                sh 'kubectl apply -f https://raw.githubusercontent.com/arkana007/ctt-devops-eks/main/services-ingress.yaml'
+            steps {
+                sh 'sleep 10'
+                sh 'echo stage configureingress'
+                sh 'kubectl apply -f https://raw.githubusercontent.com/arrsvjes/ctt-devops-eks/main/ingresses-jenkins.yaml'
+                sh 'kubectl apply -f https://raw.githubusercontent.com/arrsvjes/ctt-devops-eks/main/ingresses-nexus.yaml'
+                sh 'kubectl apply -f https://raw.githubusercontent.com/arrsvjes/ctt-devops-eks/main/ingresses-gitlab.yaml'
+                sh 'wget https://raw.githubusercontent.com/arrsvjes/ctt-devops-eks/main/ingress-nginx-nexus-patch.yaml && kubectl patch deployment/ingress2-ingress-nginx-controller -n ingress-nginx-nexus --patch-file ingress-nginx-nexus-patch.yaml'
+                sh 'wget https://raw.githubusercontent.com/arrsvjes/ctt-devops-eks/main/ingress-nginx-gitlab-patch.yaml && kubectl patch deployment/ingress3-ingress-nginx-controller -n ingress-nginx-gitlab --patch-file ingress-nginx-gitlab-patch.yaml'
             }
         }
     }
-    post {
-        always {
-            archiveArtifacts artifacts: 'kubeconfig', onlyIfSuccessful: true
-        }
-    }
-}
